@@ -14,52 +14,52 @@ public class DatabaseCredentials {
         return type;
     }
 
-    public String getHost() {
-        return host;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getDatabaseName() {
-        return databaseName;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getHost() {
+        return host;
     }
 
     public void setHost(String host) {
         this.host = host;
     }
 
+    public String getUser() {
+        return user;
+    }
+
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
     public void setDatabaseName(String databaseName) {
         this.databaseName = databaseName;
     }
 
+    public String getUri() {
+        return uri;
+    }
+
     public void setUri(String uri) {
         this.uri = uri;
+    }
+
+    public int getPort() {
+        return port;
     }
 
     public void setPort(int port) {

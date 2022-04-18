@@ -21,7 +21,8 @@ public class GlobalListener implements EventListener {
     @Override
     public void onEvent(@NotNull GenericEvent event) {
         if (event instanceof SlashCommandInteractionEvent) onCommand((SlashCommandInteractionEvent) event);
-        if (event instanceof GenericComponentInteractionCreateEvent) onInteraction((GenericComponentInteractionCreateEvent) event);
+        if (event instanceof GenericComponentInteractionCreateEvent)
+            onInteraction((GenericComponentInteractionCreateEvent) event);
     }
 
     private void onCommand(SlashCommandInteractionEvent event) {

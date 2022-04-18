@@ -18,10 +18,10 @@ import java.net.URLConnection;
  */
 public abstract class Supervised {
 
-    private boolean isEnabled = false;
     public ServerConfigsManager serverConfigsManager;
     public JDA jda;
     public Supervisor supervisor;
+    private boolean isEnabled = false;
     private SupervisedLoader supervisedLoader = null;
     private GlobalListener globalListener;
     private File file = null;
@@ -34,7 +34,7 @@ public abstract class Supervised {
     public Supervised() {
         final ClassLoader classLoader = this.getClass().getClassLoader();
         if (!(classLoader instanceof SupervisedClassLoader)) {
-            throw new IllegalStateException("JavaPlugin requires " + SupervisedClassLoader.class.getName());
+            throw new IllegalStateException("Supervised requires " + SupervisedClassLoader.class.getName());
         }
         ((SupervisedClassLoader) classLoader).initialize(this);
     }
@@ -91,7 +91,7 @@ public abstract class Supervised {
         }
     }
 
-    public void saveDefaultConfig(){
+    public void saveDefaultConfig() {
         if (!configFile.exists()) {
             saveResource("config.yml", false);
         }
@@ -148,11 +148,12 @@ public abstract class Supervised {
 
     /**
      * Loads the config file parsing it as the given class
+     *
      * @param configClass The class of the config
      */
     public <T extends Config> void loadConfig(Class<T> configClass) {
 
-        if(this.configFile.exists()) {
+        if (this.configFile.exists()) {
 
             Yaml yaml = new Yaml(new CustomClassLoaderConstructor(this.classLoader));
             yaml.setBeanAccess(BeanAccess.FIELD);
@@ -163,7 +164,7 @@ public abstract class Supervised {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             this.configFile.getParentFile().mkdirs();
             try {
                 this.configFile.createNewFile();

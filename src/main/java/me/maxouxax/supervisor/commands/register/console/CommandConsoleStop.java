@@ -7,7 +7,7 @@ public class CommandConsoleStop implements ConsoleCommand {
 
     private final Supervisor supervisor;
 
-    public CommandConsoleStop(){
+    public CommandConsoleStop() {
         this.supervisor = Supervisor.getInstance();
     }
 

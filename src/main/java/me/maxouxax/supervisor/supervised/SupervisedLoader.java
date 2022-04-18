@@ -12,13 +12,11 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.regex.Pattern;
 
 
 public final class SupervisedLoader {
 
     final Supervisor supervisor;
-    private final Pattern[] fileFilters = new Pattern[]{Pattern.compile("\\.jar$")};
     private final List<SupervisedClassLoader> loaders = new CopyOnWriteArrayList<>();
 
     /**
@@ -94,12 +92,7 @@ public final class SupervisedLoader {
         }
     }
 
-    @NotNull
-    public Pattern[] getPluginFileFilters() {
-        return fileFilters.clone();
-    }
-
-    public void enablePlugin(@NotNull final Supervised supervised) {
+    public void enableSupervised(@NotNull final Supervised supervised) {
         if (!supervised.isEnabled()) {
             supervisor.getLogger().info("Enabling " + supervised.getDescription().getName());
 
@@ -107,18 +100,18 @@ public final class SupervisedLoader {
 
             if (!loaders.contains(supervisedClassLoader)) {
                 loaders.add(supervisedClassLoader);
-                supervisor.getLogger().warn("Enabled plugin with unregistered PluginClassLoader " + supervised.getDescription().getName());
+                supervisor.getLogger().warn("Enabled supervised with unregistered SupervisedClassLoader " + supervised.getDescription().getName());
             }
 
             try {
                 supervised.setEnabled(true);
             } catch (Throwable ex) {
-                supervisor.getLogger().error("Error occurred while enabling " + supervised.getDescription().getName() + " (Is it up to date?)", ex);
+                supervisor.getLogger().error("Error occurred while enabling " + supervised.getDescription().getName(), ex);
             }
         }
     }
 
-    public void disablePlugin(@NotNull Supervised supervised) {
+    public void disableSupervised(@NotNull Supervised supervised) {
         if (supervised.isEnabled()) {
             String message = String.format("Disabling %s", supervised.getDescription().getName());
             supervisor.getLogger().info(message);
@@ -128,7 +121,7 @@ public final class SupervisedLoader {
             try {
                 supervised.setEnabled(false);
             } catch (Throwable ex) {
-                supervisor.getLogger().error("Error occurred while disabling " + supervised.getDescription().getName() + " (Is it up to date?)", ex);
+                supervisor.getLogger().error("Error occurred while disabling " + supervised.getDescription().getName(), ex);
             }
 
             if (cloader instanceof SupervisedClassLoader) {

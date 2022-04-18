@@ -12,11 +12,11 @@ import java.util.List;
 
 public class EmbedCrafter {
 
+    private final List<MessageEmbed.Field> fields = new ArrayList<>();
     private String title;
     private String url;
     private int color = 15528177;
     private String description;
-    private final List<MessageEmbed.Field> fields = new ArrayList<>();
     private String thumbnailUrl;
     private String imageUrl;
     private String authorName, authorUrl, authorIconUrl;
@@ -31,13 +31,13 @@ public class EmbedCrafter {
         return title;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
     public EmbedCrafter setTitle(String title) {
         this.title = title;
         return this;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public EmbedCrafter setTitle(String title, String url) {

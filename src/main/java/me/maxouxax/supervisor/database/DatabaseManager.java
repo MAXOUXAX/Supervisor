@@ -22,7 +22,7 @@ public class DatabaseManager {
     public static void initDatabaseConnection(File file) throws SQLException {
         DatabaseCredentials databaseCredentials;
 
-        if(file.exists()) {
+        if (file.exists()) {
 
             try (final Reader reader = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
                 Yaml yaml = new Yaml(new CustomClassLoaderConstructor(ClassLoader.getSystemClassLoader()));

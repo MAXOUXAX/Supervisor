@@ -17,6 +17,11 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 final class SupervisedClassLoader extends URLClassLoader {
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
+
+    final Supervised supervised;
     private final SupervisedLoader loader;
     private final Map<String, Class<?>> classes = new ConcurrentHashMap<String, Class<?>>();
     private final SupervisedDescriptionFile description;
@@ -25,14 +30,9 @@ final class SupervisedClassLoader extends URLClassLoader {
     private final JarFile jar;
     private final Manifest manifest;
     private final URL url;
-    final Supervised supervised;
-    private Supervised supervisedInit;
-    private IllegalStateException pluginState;
     private final Set<String> seenIllegalAccess = Collections.newSetFromMap(new ConcurrentHashMap<>());
-
-    static {
-        ClassLoader.registerAsParallelCapable();
-    }
+    private Supervised supervisedInit;
+    private IllegalStateException supervisedState;
 
     SupervisedClassLoader(final SupervisedLoader loader, final ClassLoader parent, final SupervisedDescriptionFile description, File dataFolder, File file) throws InvalidSupervisedException, IOException, MalformedURLException {
         super(new URL[]{file.toURI().toURL()}, parent);
@@ -53,27 +53,27 @@ final class SupervisedClassLoader extends URLClassLoader {
                 throw new InvalidSupervisedException("Cannot find main class `" + description.getMain() + "'", ex);
             }
 
-            Class<? extends Supervised> pluginClass;
+            Class<? extends Supervised> supervisedClass;
             try {
-                pluginClass = jarClass.asSubclass(Supervised.class);
+                supervisedClass = jarClass.asSubclass(Supervised.class);
             } catch (ClassCastException ex) {
-                throw new InvalidSupervisedException("main class `" + description.getMain() + "' does not extend JavaPlugin", ex);
+                throw new InvalidSupervisedException("main class `" + description.getMain() + "' does not extend Supervised", ex);
             }
 
-            supervised = pluginClass.getDeclaredConstructor().newInstance();
+            supervised = supervisedClass.getDeclaredConstructor().newInstance();
         } catch (IllegalAccessException ex) {
             throw new InvalidSupervisedException("No public constructor", ex);
         } catch (InstantiationException | NoSuchMethodException | InvocationTargetException ex) {
-            throw new InvalidSupervisedException("Abnormal plugin type", ex);
+            throw new InvalidSupervisedException("Abnormal supervised type", ex);
         }
     }
 
     synchronized void initialize(@NotNull Supervised supervised) {
         if (this.supervised != null || this.supervisedInit != null) {
-            throw new IllegalArgumentException("Plugin already initialized!", pluginState);
+            throw new IllegalArgumentException("Supervised already initialized!", supervisedState);
         }
 
-        pluginState = new IllegalStateException("Initial initialization");
+        supervisedState = new IllegalStateException("Initial initialization");
         this.supervisedInit = supervised;
 
         supervised.init(loader, loader.supervisor, description, dataFolder, file, this);

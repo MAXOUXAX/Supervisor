@@ -25,7 +25,7 @@ public class SupervisedManager {
     public void loadAllSupervised(@NotNull File directory) {
         if (directory.exists()) {
             for (File file : directory.listFiles()) {
-                if(file.isDirectory() || !file.getName().endsWith(".jar")) continue;
+                if (file.isDirectory() || !file.getName().endsWith(".jar")) continue;
                 try {
                     Supervised loadedSupervised = loadSupervised(file);
                     supervisor.getCommandManager().registerSupervised(loadedSupervised);
@@ -64,9 +64,9 @@ public class SupervisedManager {
     public void enableSupervised(@NotNull final Supervised supervised) {
         if (!supervised.isEnabled()) {
             try {
-                supervised.getSupervisedLoader().enablePlugin(supervised);
+                supervised.getSupervisedLoader().enableSupervised(supervised);
             } catch (Throwable ex) {
-                supervisor.getLogger().error("Error occurred (in the plugin loader) while enabling " + supervised.getDescription().getName() + " (Is it up to date?)", ex);
+                supervisor.getLogger().error("Error occurred (in the supervised loader) while enabling " + supervised.getDescription().getName(), ex);
             }
         }
     }
@@ -78,9 +78,9 @@ public class SupervisedManager {
     public void disableSupervised(@NotNull final Supervised supervised) {
         if (supervised.isEnabled()) {
             try {
-                supervised.getSupervisedLoader().disablePlugin(supervised);
+                supervised.getSupervisedLoader().disableSupervised(supervised);
             } catch (Throwable ex) {
-                supervisor.getLogger().error("Error occurred (in the plugin loader) while disabling " + supervised.getDescription().getName() + " (Is it up to date?)", ex);
+                supervisor.getLogger().error("Error occurred (in the supervised loader) while disabling " + supervised.getDescription().getName(), ex);
             }
         }
     }

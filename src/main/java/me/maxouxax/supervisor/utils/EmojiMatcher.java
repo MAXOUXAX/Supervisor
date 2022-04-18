@@ -20,14 +20,6 @@ public enum EmojiMatcher {
     private String name;
     private String value;
 
-    public String getName() {
-        return name;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
     EmojiMatcher(String name, String value) {
         this.name = name;
         this.value = value;
@@ -35,6 +27,14 @@ public enum EmojiMatcher {
 
     public static EmojiMatcher getEmojiFromInteger(int number) {
         return Arrays.stream(values()).collect(Collectors.toCollection(ArrayList::new)).stream().filter(emojiMatcher -> emojiMatcher.getValue().equalsIgnoreCase(String.valueOf(number))).findFirst().get();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getValue() {
+        return value;
     }
 
 }

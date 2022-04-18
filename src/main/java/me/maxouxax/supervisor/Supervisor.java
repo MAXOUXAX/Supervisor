@@ -19,14 +19,13 @@ import java.util.Scanner;
 public class Supervisor implements Runnable {
 
     private static Supervisor instance;
-    private boolean running;
     private final Scanner scanner = new Scanner(System.in);
     private final Logger logger;
-
     private final ErrorHandler errorHandler;
     private final SupervisedManager supervisedManager;
     private final CommandManager commandManager;
     private final String version;
+    private boolean running;
 
     public Supervisor() throws IllegalArgumentException, NullPointerException, SQLException, IOException {
         instance = this;
@@ -65,13 +64,27 @@ public class Supervisor implements Runnable {
         logger.info("Done! (" + (new Date().getTime() - date.getTime()) + "ms)");
     }
 
+    public static void main(String[] args) {
+        try {
+            Supervisor supervisor = new Supervisor();
+            Thread thread = new Thread(supervisor, "Supervisor");
+            thread.start();
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Supervisor getInstance() {
+        return instance;
+    }
+
     private void loadConfigs() throws SQLException, IOException {
         File configFolder = new File("configs/");
 
         File mariaDbConfig = new File(configFolder, "mariadb.yml");
         File mongoDbConfig = new File(configFolder, "mongodb.yml");
 
-        if(!configFolder.exists()){
+        if (!configFolder.exists()) {
             logger.info("Config folder not found, creating...");
             configFolder.mkdirs();
         }
@@ -80,7 +93,7 @@ public class Supervisor implements Runnable {
             logger.info("MariaDB config not found, copying default config...");
             copyDefaultConfig(mariaDbConfig);
         }
-        if(!mongoDbConfig.exists()) {
+        if (!mongoDbConfig.exists()) {
             logger.info("MongoDB config not found, copying default config...");
             copyDefaultConfig(mongoDbConfig);
         }
@@ -95,23 +108,13 @@ public class Supervisor implements Runnable {
 
     private void copyDefaultConfig(File configFile) throws IOException {
         InputStream defaultConfig = getClass().getClassLoader().getResourceAsStream("configs/" + configFile.getName());
-        if(defaultConfig != null) {
+        if (defaultConfig != null) {
             try {
                 Files.copy(defaultConfig, configFile.toPath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
             defaultConfig.close();
-        }
-    }
-
-    public static void main(String[] args) {
-        try {
-            Supervisor supervisor = new Supervisor();
-            Thread thread = new Thread(supervisor, "Supervisor");
-            thread.start();
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -122,7 +125,7 @@ public class Supervisor implements Runnable {
         while (running) {
             if (scanner.hasNextLine()) {
                 String commandInput = scanner.nextLine();
-                if(!commandManager.executeConsoleCommand(commandInput)){
+                if (!commandManager.executeConsoleCommand(commandInput)) {
                     logger.warn("Unknown command: " + commandInput);
                 }
             }
@@ -154,10 +157,6 @@ public class Supervisor implements Runnable {
 
     public String getVersion() {
         return version;
-    }
-
-    public static Supervisor getInstance() {
-        return instance;
     }
 
     public SupervisedManager getSupervisedManager() {

@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteract
 public interface DiscordInteraction extends Identifier {
 
     String id();
+
     void onInteraction(GenericComponentInteractionCreateEvent event);
 
 }
