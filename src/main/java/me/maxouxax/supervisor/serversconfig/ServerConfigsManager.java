@@ -45,7 +45,7 @@ public abstract class ServerConfigsManager {
 
     public void saveServerConfig(ServerConfig serverConfig) {
         String serverId = serverConfig.getServerId();
-        if (serverConfig.equals(getServerConfig(serverId))) return;
+        if (serverConfig.equals(getDefault(serverId))) return;
 
         MongoClient mongoClient = this.databaseAccess.getMongoClient();
         MongoDatabase database = mongoClient.getDatabase(databaseName);
