@@ -1,0 +1,7 @@
+type: MARIADB
+host: host
+user: username
+password: password
+port: 3306
+databaseName: database name
+uri: "jdbc:mariadb://{host}:{port}/{databaseName}"

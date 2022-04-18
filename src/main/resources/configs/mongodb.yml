@@ -1,0 +1,7 @@
+type: MONGODB
+host: host
+user: username
+password: password
+port: 3306
+databaseName: database name
+uri: "mongodb://{user}:{password}@{host}:{port}/?authSource={databaseName}"
