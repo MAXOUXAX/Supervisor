@@ -7,6 +7,7 @@ import me.maxouxax.supervisor.supervised.Supervised;
 import me.maxouxax.supervisor.supervised.SupervisedManager;
 import me.maxouxax.supervisor.utils.ErrorHandler;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class Supervisor implements Runnable {
 
     public Supervisor() throws IllegalArgumentException, NullPointerException, SQLException, IOException {
         instance = this;
-        this.logger = org.slf4j.LoggerFactory.getLogger(Supervisor.class);
+        this.logger = LoggerFactory.getLogger(Supervisor.class);
         String string = new File(Supervisor.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName();
         string = string.replaceAll("Supervisor-", "")
                 .replaceAll(".jar", "");
