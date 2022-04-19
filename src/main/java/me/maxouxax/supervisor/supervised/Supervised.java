@@ -24,7 +24,6 @@ public abstract class Supervised {
     private boolean isEnabled = false;
     private SupervisedLoader supervisedLoader = null;
     private GlobalListener globalListener;
-    private File file = null;
     private File dataFolder = null;
     private File configFile = null;
     private Config config = null;
@@ -151,6 +150,7 @@ public abstract class Supervised {
      *
      * @param configClass The class of the config
      */
+    @SuppressWarnings("unused")
     public <T extends Config> void loadConfig(Class<T> configClass) {
 
         if (this.configFile.exists()) {
@@ -182,23 +182,25 @@ public abstract class Supervised {
         return this.jda;
     }
 
+    @SuppressWarnings("unused")
     public File getDataFolder() {
         return this.dataFolder;
     }
 
+    @SuppressWarnings("unused")
     public Config getConfig() {
         return this.config;
     }
 
+    @SuppressWarnings("unused")
     public void bindListeners() {
         this.jda.addEventListener(this.globalListener);
     }
 
-    final void init(@NotNull SupervisedLoader supervisedLoader, Supervisor supervisor, @NotNull SupervisedDescriptionFile description, @NotNull File dataFolder, @NotNull File file, @NotNull ClassLoader classLoader) {
+    final void init(@NotNull SupervisedLoader supervisedLoader, Supervisor supervisor, @NotNull SupervisedDescriptionFile description, @NotNull File dataFolder, @NotNull ClassLoader classLoader) {
         this.supervisedLoader = supervisedLoader;
         this.supervisor = supervisor;
         this.globalListener = new GlobalListener(this, supervisor);
-        this.file = file;
         this.description = description;
         this.dataFolder = dataFolder;
         this.classLoader = classLoader;

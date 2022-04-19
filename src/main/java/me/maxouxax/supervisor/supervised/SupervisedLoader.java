@@ -13,18 +13,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-
 public final class SupervisedLoader {
 
     final Supervisor supervisor;
     private final List<SupervisedClassLoader> loaders = new CopyOnWriteArrayList<>();
 
-    /**
-     * This class was not meant to be constructed explicitly
-     *
-     * @param instance the server instance
-     */
-    @Deprecated
     public SupervisedLoader(@NotNull Supervisor instance) {
         supervisor = instance;
     }
@@ -116,7 +109,7 @@ public final class SupervisedLoader {
             String message = String.format("Disabling %s", supervised.getDescription().getName());
             supervisor.getLogger().info(message);
 
-            ClassLoader cloader = supervised.getClassLoader();
+            ClassLoader classLoader = supervised.getClassLoader();
 
             try {
                 supervised.setEnabled(false);
@@ -124,14 +117,12 @@ public final class SupervisedLoader {
                 supervisor.getLogger().error("Error occurred while disabling " + supervised.getDescription().getName(), ex);
             }
 
-            if (cloader instanceof SupervisedClassLoader) {
-                SupervisedClassLoader loader = (SupervisedClassLoader) cloader;
+            if (classLoader instanceof SupervisedClassLoader loader) {
                 loaders.remove(loader);
 
                 try {
                     loader.close();
-                } catch (IOException ex) {
-                    //
+                } catch (IOException ignored) {
                 }
             }
         }

@@ -6,44 +6,28 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
 
-final class SupervisedClassLoader extends URLClassLoader {
+public final class SupervisedClassLoader extends URLClassLoader {
+
     static {
         ClassLoader.registerAsParallelCapable();
     }
 
     final Supervised supervised;
     private final SupervisedLoader loader;
-    private final Map<String, Class<?>> classes = new ConcurrentHashMap<String, Class<?>>();
     private final SupervisedDescriptionFile description;
     private final File dataFolder;
-    private final File file;
-    private final JarFile jar;
-    private final Manifest manifest;
-    private final URL url;
-    private final Set<String> seenIllegalAccess = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private Supervised supervisedInit;
     private IllegalStateException supervisedState;
 
-    SupervisedClassLoader(final SupervisedLoader loader, final ClassLoader parent, final SupervisedDescriptionFile description, File dataFolder, File file) throws InvalidSupervisedException, IOException, MalformedURLException {
+    SupervisedClassLoader(final SupervisedLoader loader, final ClassLoader parent, final SupervisedDescriptionFile description, File dataFolder, File file) throws InvalidSupervisedException, IOException {
         super(new URL[]{file.toURI().toURL()}, parent);
 
         this.loader = loader;
         this.description = description;
         this.dataFolder = dataFolder;
-        this.file = file;
-        this.jar = new JarFile(file);
-        this.manifest = jar.getManifest();
-        this.url = file.toURI().toURL();
 
         try {
             Class<?> jarClass;
@@ -76,7 +60,7 @@ final class SupervisedClassLoader extends URLClassLoader {
         supervisedState = new IllegalStateException("Initial initialization");
         this.supervisedInit = supervised;
 
-        supervised.init(loader, loader.supervisor, description, dataFolder, file, this);
+        supervised.init(loader, loader.supervisor, description, dataFolder, this);
     }
 
 }
