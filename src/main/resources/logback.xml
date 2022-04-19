@@ -3,21 +3,20 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>[%d{HH:mm:ss}] [%thread] %highlight(%-5level) %cyan(%logger{35}) - %msg %n</pattern>
+            <pattern>[%d{HH:mm:ss}] %highlight(%-4level) %cyan(%-30.-30(%logger{35})) | %msg %n</pattern>
         </encoder>
     </appender>
 
     <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>latest.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>logs/%d{yyyy-dd-MM}.%i.log</fileNamePattern>
-            <maxFileSize>30MB</maxFileSize>
+        <file>logs/latest.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/%d.gz</fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>[%d{HH:mm:ss}] [%thread] %highlight(%-5level) %cyan(%logger{35}) - %msg %n</pattern>
+            <pattern>[%d{HH:mm:ss}] %highlight(%-4level) %cyan(%-30.-30(%logger{35})) | %msg %n</pattern>
         </encoder>
     </appender>
 
