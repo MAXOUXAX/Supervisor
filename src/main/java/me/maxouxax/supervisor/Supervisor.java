@@ -3,7 +3,6 @@ package me.maxouxax.supervisor;
 import me.maxouxax.supervisor.commands.CommandManager;
 import me.maxouxax.supervisor.commands.register.console.CommandConsoleStop;
 import me.maxouxax.supervisor.database.DatabaseManager;
-import me.maxouxax.supervisor.supervised.Supervised;
 import me.maxouxax.supervisor.supervised.SupervisedManager;
 import me.maxouxax.supervisor.utils.ErrorHandler;
 import org.slf4j.Logger;
@@ -21,14 +20,14 @@ public class Supervisor implements Runnable {
 
     private static Supervisor instance;
     private final Scanner scanner = new Scanner(System.in);
-    private final Logger logger;
-    private final ErrorHandler errorHandler;
-    private final SupervisedManager supervisedManager;
-    private final CommandManager commandManager;
-    private final String version;
+    private Logger logger;
+    private ErrorHandler errorHandler;
+    private SupervisedManager supervisedManager;
+    private CommandManager commandManager;
+    private String version;
     private boolean running;
 
-    public Supervisor() throws IllegalArgumentException, NullPointerException, SQLException, IOException {
+    public void startSupervisor() throws SQLException, IOException {
         instance = this;
         this.logger = LoggerFactory.getLogger(Supervisor.class);
         String string = new File(Supervisor.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName();
@@ -46,7 +45,13 @@ public class Supervisor implements Runnable {
 
         logger.info("Loading configs...");
 
-        loadConfigs();
+        try {
+            loadConfigs();
+        } catch (SQLException | IOException e) {
+            logger.error("An error occured while loading configs: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
 
         logger.info("Loading command manager...");
         this.commandManager = new CommandManager();
@@ -66,13 +71,9 @@ public class Supervisor implements Runnable {
     }
 
     public static void main(String[] args) {
-        try {
-            Supervisor supervisor = new Supervisor();
-            Thread thread = new Thread(supervisor, "Supervisor");
-            thread.start();
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        }
+        Supervisor supervisor = new Supervisor();
+        Thread thread = new Thread(supervisor, "Supervisor");
+        thread.start();
     }
 
     public static Supervisor getInstance() {
@@ -123,24 +124,33 @@ public class Supervisor implements Runnable {
     public void run() {
         running = true;
 
+        try {
+            startSupervisor();
+        } catch (Exception e) {
+            logger.error("Supervisor encountered an error while starting, forcibly shutting down...");
+            System.exit(1);
+        }
+
         while (running) {
             if (scanner.hasNextLine()) {
                 String commandInput = scanner.nextLine();
                 if (!commandManager.executeConsoleCommand(commandInput)) {
-                    logger.warn("Unknown command: " + commandInput);
+                    logger.info("Unknown command: " + commandInput);
                 }
             }
         }
 
-        this.supervisedManager.getSupervised().forEach(Supervised::onDisable);
         logger.info("--------------- STOPPING ---------------");
-        logger.info("> Shutdown in progress...");
+        logger.info("Supervisor is being stopped...");
+        logger.info("Closing scanner to prevent further input...");
         scanner.close();
-        logger.info("> Scanner closed!");
+        logger.info("Disabling all supervised bots...");
+        this.supervisedManager.disableAllSupervised();
+        logger.info("All supervised bots disabled!");
+        logger.info("Closing database connections...");
         DatabaseManager.closeDatabasesConnection();
-        logger.info("> Closed database connection!");
+        logger.info("Database connections closed!");
         logger.info("--------------- STOPPING ---------------");
-        logger.info("Arrêt du BOT réussi");
         System.exit(0);
     }
 
