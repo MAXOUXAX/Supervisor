@@ -13,6 +13,7 @@ import java.util.List;
 public class EmbedCrafter {
 
     private final List<MessageEmbed.Field> fields = new ArrayList<>();
+    private OffsetDateTime timestamp;
     private String title;
     private String url;
     private int color = 15528177;
@@ -25,6 +26,7 @@ public class EmbedCrafter {
     public EmbedCrafter(Supervised supervised) {
         this.footerText = supervised.getConfig().getEmbed().getFooterText();
         this.footerIconUrl = supervised.getConfig().getEmbed().getFooterIconUrl();
+        this.timestamp = OffsetDateTime.now(ZoneId.of("Europe/Paris"));
     }
 
     public String getTitle() {
@@ -136,11 +138,20 @@ public class EmbedCrafter {
         return footerIconUrl;
     }
 
+    public OffsetDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public EmbedCrafter setTimestamp(OffsetDateTime timestamp) {
+        this.timestamp = timestamp;
+        return this;
+    }
+
     public MessageEmbed build() {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(color);
         if (footerText != null) embedBuilder.setFooter(footerText, footerIconUrl);
-        embedBuilder.setTimestamp(OffsetDateTime.now(ZoneId.of("Europe/Paris")));
+        embedBuilder.setTimestamp(timestamp);
 
         fields.forEach(embedBuilder::addField);
         if (title != null) {
