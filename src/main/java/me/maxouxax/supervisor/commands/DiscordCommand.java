@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 
 public interface DiscordCommand extends Command {
 
-    void onCommand(TextChannel textChannel, Member member, SlashCommandInteractionEvent messageContextInteractionEvent);
+    void onCommand(TextChannel textChannel, Member member, SlashCommandInteractionEvent slashCommandInteractionEvent);
 
     int power();
 
