@@ -1,23 +1,28 @@
 package me.maxouxax.supervisor.jda.pojos;
 
 import net.dv8tion.jda.api.entities.PermissionOverride;
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 /**
  * POJO for the {@link PermissionOverride} interface
  */
 public class ChannelPermission {
 
-    long allowedRaw;
-    long deniedRaw;
-    boolean isMemberPermission;
-    String channelId;
-    String guildId;
-    String holderId;
+    private final long allowedRaw;
+    private final long deniedRaw;
+    private final boolean isMemberPermission;
+    private final String channelId;
+    private final String guildId;
+    private final String holderId;
 
-    public ChannelPermission() {
-    }
-
-    public ChannelPermission(long allowedRaw, long deniedRaw, boolean isMemberPermission, String channelId, String guildId, String holderId) {
+    @BsonCreator
+    public ChannelPermission(@BsonProperty("allowedRaw") final long allowedRaw,
+                             @BsonProperty("deniedRaw") final long deniedRaw,
+                             @BsonProperty("isMemberPermission") final boolean isMemberPermission,
+                             @BsonProperty("channelId") final String channelId,
+                             @BsonProperty("guildId") final String guildId,
+                             @BsonProperty("holderId") final String holderId) {
         this.allowedRaw = allowedRaw;
         this.deniedRaw = deniedRaw;
         this.isMemberPermission = isMemberPermission;
@@ -44,10 +49,6 @@ public class ChannelPermission {
         return allowedRaw;
     }
 
-    public void setAllowedRaw(long allowedRaw) {
-        this.allowedRaw = allowedRaw;
-    }
-
     /**
      * This is the raw binary representation (as a base 10 long) of the permissions denied by this override.
      *
@@ -55,10 +56,6 @@ public class ChannelPermission {
      */
     public long getDeniedRaw() {
         return deniedRaw;
-    }
-
-    public void setDeniedRaw(long deniedRaw) {
-        this.deniedRaw = deniedRaw;
     }
 
     /**
@@ -70,19 +67,11 @@ public class ChannelPermission {
         return isMemberPermission;
     }
 
-    public void setMemberPermission(boolean memberPermission) {
-        isMemberPermission = memberPermission;
-    }
-
     /**
      * @return The ID of the channel this ChannelPermission is for.
      */
     public String getChannelId() {
         return channelId;
-    }
-
-    public void setChannelId(String channelId) {
-        this.channelId = channelId;
     }
 
     /**
@@ -92,19 +81,11 @@ public class ChannelPermission {
         return guildId;
     }
 
-    public void setGuildId(String guildId) {
-        this.guildId = guildId;
-    }
-
     /**
      * @return The ID of the user or role that this ChannelPermission is for.
      */
     public String getHolderId() {
         return holderId;
-    }
-
-    public void setHolderId(String holderId) {
-        this.holderId = holderId;
     }
 
 }
