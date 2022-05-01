@@ -7,6 +7,7 @@ import com.mongodb.client.MongoClients;
 import me.maxouxax.supervisor.database.DatabaseCredentials;
 import me.maxouxax.supervisor.database.IDatabaseAccess;
 import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -23,7 +24,7 @@ public class DatabaseAccess implements IDatabaseAccess {
 
     private void setupMongo() {
         ConnectionString connectionString = new ConnectionString(databaseCredentials.toURI());
-        CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
+        CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().conventions(Conventions.DEFAULT_CONVENTIONS).automatic(true).build());
         CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
         MongoClientSettings clientSettings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
