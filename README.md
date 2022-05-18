@@ -1,3 +1,3 @@
-# Supervisor
+# 🔨 Supervisor
 
-Supervisor — Powerful framework for managing Discord bots
+Powerful framework for managing Discord bots
