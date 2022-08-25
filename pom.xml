@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.maxouxax</groupId>
-    <artifactId>Supervisor</artifactId>
+    <artifactId>supervisor</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <build>
