@@ -56,7 +56,7 @@ public class Supervisor implements Runnable {
         logger.info("Loading command manager...");
         this.commandManager = new CommandManager();
         logger.info("Registering stop command...");
-        this.commandManager.registerConsoleCommand(new CommandConsoleStop());
+        this.commandManager.registerCommand(new CommandConsoleStop());
 
         logger.info("Initial components loaded, loading supervised manager...");
         this.supervisedManager = new SupervisedManager();
@@ -131,15 +131,6 @@ public class Supervisor implements Runnable {
             System.exit(1);
         }
 
-        while (running) {
-            if (scanner.hasNextLine()) {
-                String commandInput = scanner.nextLine();
-                if (!commandManager.executeConsoleCommand(commandInput)) {
-                    logger.info("Unknown command: " + commandInput);
-                }
-            }
-        }
-
         logger.info("--------------- STOPPING ---------------");
         logger.info("Supervisor is being stopped...");
         logger.info("Closing scanner to prevent further input...");
@@ -176,6 +167,10 @@ public class Supervisor implements Runnable {
 
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 
 }
