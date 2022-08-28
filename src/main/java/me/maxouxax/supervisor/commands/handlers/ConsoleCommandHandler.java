@@ -48,13 +48,14 @@ public class ConsoleCommandHandler implements CommandHandler {
                 String[] commandArgs = new String[args.length - 1];
                 System.arraycopy(args, 1, commandArgs, 0, args.length - 1);
 
-                consoleCommands.get(supervised).stream().filter(consoleCommand -> consoleCommand.name().equalsIgnoreCase(commandName)).findFirst().ifPresent(consoleCommand -> {
-                    try {
-                        consoleCommand.onCommand(commandArgs);
-                    } catch (Exception e) {
-                        supervisor.getLogger().error("La commande " + consoleCommand.name() + " a rencontré un problème lors de son exécution. (" + e.getMessage() + ")");
-                    }
-                });
+                ConsoleCommand consoleCommand = (ConsoleCommand) getCommandFromSupervised(supervised, commandName);
+                if (consoleCommand == null) continue;
+
+                try {
+                    consoleCommand.onCommand(commandArgs);
+                } catch (Exception e) {
+                    supervisor.getLogger().error("La commande " + consoleCommand.name() + " a rencontré un problème lors de son exécution. (" + e.getMessage() + ")");
+                }
             }
         }
     }
@@ -62,6 +63,11 @@ public class ConsoleCommandHandler implements CommandHandler {
     @Override
     public ArrayList<Command> getCommandsFromSupervised(Supervised supervised) {
         return new ArrayList<>(consoleCommands.get(supervised));
+    }
+
+    @Override
+    public Command getCommandFromSupervised(Supervised supervised, String commandName) {
+        return consoleCommands.get(supervised).stream().filter(consoleCommand -> consoleCommand.name().equalsIgnoreCase(commandName)).findFirst().orElse(null);
     }
 
 }

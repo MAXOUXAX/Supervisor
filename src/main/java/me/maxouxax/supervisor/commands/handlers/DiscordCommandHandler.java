@@ -12,8 +12,11 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.hooks.EventListener;
 import net.dv8tion.jda.api.interactions.commands.build.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -46,8 +49,30 @@ public class DiscordCommandHandler implements CommandHandler {
                 // That should never happen
             }
         });
+        DiscordCommandHandlerListener listener = new DiscordCommandHandlerListener(supervised);
+
         supervised.getJda().updateCommands().addCommands(commands).queue();
+        supervised.getJda().addEventListener(listener);
     }
+
+    public class DiscordCommandHandlerListener implements EventListener {
+
+        private final Supervised supervised;
+
+        public DiscordCommandHandlerListener(Supervised supervised) {
+            this.supervised = supervised;
+        }
+
+        @Override
+        public void onEvent(@NotNull GenericEvent event) {
+            if (event instanceof SlashCommandInteractionEvent slashCommandInteractionEvent) {
+                String commandName = slashCommandInteractionEvent.getInteraction().getName();
+                Command commandFromSupervised = getCommandFromSupervised(supervised, commandName);
+                executeCommand(supervised, commandFromSupervised, slashCommandInteractionEvent);
+            }
+        }
+    }
+
 
     @Override
     public void registerSupervised(Supervised supervised) {
@@ -86,4 +111,10 @@ public class DiscordCommandHandler implements CommandHandler {
     public ArrayList<Command> getCommandsFromSupervised(Supervised supervised) {
         return null;
     }
+
+    @Override
+    public Command getCommandFromSupervised(Supervised supervised, String commandName) {
+        return discordCommands.get(supervised).stream().filter(command -> command.name().equalsIgnoreCase(commandName)).findFirst().orElse(null);
+    }
+
 }
