@@ -1,7 +1,6 @@
 package me.maxouxax.supervisor.supervised;
 
 import me.maxouxax.supervisor.Supervisor;
-import me.maxouxax.supervisor.manager.GlobalListener;
 import me.maxouxax.supervisor.serversconfig.ServerConfigsManager;
 import net.dv8tion.jda.api.JDA;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +22,6 @@ public abstract class Supervised {
     public Supervisor supervisor;
     private boolean isEnabled = false;
     private SupervisedLoader supervisedLoader = null;
-    private GlobalListener globalListener;
     private File dataFolder = null;
     private File configFile = null;
     private Config config = null;
@@ -192,15 +190,9 @@ public abstract class Supervised {
         return this.config;
     }
 
-    @SuppressWarnings("unused")
-    public void bindListeners() {
-        this.jda.addEventListener(this.globalListener);
-    }
-
     final void init(@NotNull SupervisedLoader supervisedLoader, Supervisor supervisor, @NotNull SupervisedDescriptionFile description, @NotNull File dataFolder, @NotNull ClassLoader classLoader) {
         this.supervisedLoader = supervisedLoader;
         this.supervisor = supervisor;
-        this.globalListener = new GlobalListener(this, supervisor);
         this.description = description;
         this.dataFolder = dataFolder;
         this.classLoader = classLoader;
