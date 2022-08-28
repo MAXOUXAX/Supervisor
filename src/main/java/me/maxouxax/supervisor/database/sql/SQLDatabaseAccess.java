@@ -8,12 +8,12 @@ import me.maxouxax.supervisor.database.IDatabaseAccess;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DatabaseAccess implements IDatabaseAccess {
+public class SQLDatabaseAccess implements IDatabaseAccess {
 
     private final DatabaseCredentials databaseCredentials;
     private HikariDataSource hikariDataSource;
 
-    public DatabaseAccess(DatabaseCredentials databaseCredentials) {
+    public SQLDatabaseAccess(DatabaseCredentials databaseCredentials) {
         this.databaseCredentials = databaseCredentials;
     }
 

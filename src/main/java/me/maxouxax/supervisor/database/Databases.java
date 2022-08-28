@@ -1,11 +1,12 @@
 package me.maxouxax.supervisor.database;
 
-import me.maxouxax.supervisor.database.sql.DatabaseAccess;
+import me.maxouxax.supervisor.database.nosql.NoSQLDatabaseAccess;
+import me.maxouxax.supervisor.database.sql.SQLDatabaseAccess;
 
 public enum Databases {
 
-    MARIADB("MARIADB", DatabaseAccess.class),
-    MONGODB("MONGODB", me.maxouxax.supervisor.database.nosql.DatabaseAccess.class),
+    MARIADB("MARIADB", SQLDatabaseAccess.class),
+    MONGODB("MONGODB", NoSQLDatabaseAccess.class),
     ;
 
     private String name;

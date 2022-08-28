@@ -13,12 +13,12 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
-public class DatabaseAccess implements IDatabaseAccess {
+public class NoSQLDatabaseAccess implements IDatabaseAccess {
 
     private final DatabaseCredentials databaseCredentials;
     private MongoClient mongoClient;
 
-    public DatabaseAccess(DatabaseCredentials databaseCredentials) {
+    public NoSQLDatabaseAccess(DatabaseCredentials databaseCredentials) {
         this.databaseCredentials = databaseCredentials;
     }
 

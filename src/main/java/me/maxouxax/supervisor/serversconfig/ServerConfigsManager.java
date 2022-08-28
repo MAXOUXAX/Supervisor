@@ -6,7 +6,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import me.maxouxax.supervisor.database.DatabaseManager;
 import me.maxouxax.supervisor.database.Databases;
-import me.maxouxax.supervisor.database.nosql.DatabaseAccess;
+import me.maxouxax.supervisor.database.nosql.NoSQLDatabaseAccess;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,16 +14,16 @@ import java.util.List;
 public abstract class ServerConfigsManager {
 
     private String databaseName;
-    private DatabaseAccess databaseAccess;
+    private NoSQLDatabaseAccess noSQLDatabaseAccess;
     private List<ServerConfig> serverConfigs;
 
     public ServerConfigsManager(String databaseName) {
         this.databaseName = databaseName;
-        this.databaseAccess = (DatabaseAccess) DatabaseManager.getDatabaseAccess(Databases.MONGODB.getName());
+        this.noSQLDatabaseAccess = (NoSQLDatabaseAccess) DatabaseManager.getDatabaseAccess(Databases.MONGODB.getName());
     }
 
     public void loadConfigs() {
-        MongoClient mongoClient = this.databaseAccess.getMongoClient();
+        MongoClient mongoClient = this.noSQLDatabaseAccess.getMongoClient();
         MongoDatabase database = mongoClient.getDatabase(databaseName);
         MongoCollection<? extends ServerConfig> collection = database.getCollection("server_config", getServerConfigImpl());
         this.serverConfigs = collection.find().into(new ArrayList<>());
@@ -47,7 +47,7 @@ public abstract class ServerConfigsManager {
         String serverId = serverConfig.getServerId();
         if (serverConfig.equals(getDefault(serverId))) return;
 
-        MongoClient mongoClient = this.databaseAccess.getMongoClient();
+        MongoClient mongoClient = this.noSQLDatabaseAccess.getMongoClient();
         MongoDatabase database = mongoClient.getDatabase(databaseName);
         MongoCollection<ServerConfig> collection = database.getCollection("server_config", getServerConfigImpl());
         if (collection.countDocuments(Filters.eq("_id", serverId)) == 0) {
