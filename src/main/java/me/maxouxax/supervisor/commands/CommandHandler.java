@@ -39,4 +39,13 @@ public interface CommandHandler {
 
     ArrayList<Command> getCommandsFromSupervised(Supervised supervised);
 
+    /**
+     * This should return the command instance from the command name
+     *
+     * @param supervised  The supervised to get the commands from
+     * @param commandName The name of the command to get
+     * @return The command with the given name
+     */
+    Command getCommandFromSupervised(Supervised supervised, String commandName);
+
 }
