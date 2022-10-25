@@ -8,8 +8,8 @@ import me.maxouxax.supervisor.commands.slashannotations.SubcommandGroup;
 import me.maxouxax.supervisor.supervised.Supervised;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.interactions.commands.build.*;
@@ -93,7 +93,7 @@ public final class CommandManager {
             }
 
             try {
-                discordCommand.onCommand(slashCommandEvent.getTextChannel(), slashCommandEvent.getMember(), slashCommandEvent);
+                discordCommand.onCommand(slashCommandEvent.getChannel(), slashCommandEvent.getMember(), slashCommandEvent);
             } catch (Exception e) {
                 supervisor.getLogger().error("La commande " + discordCommand.name() + " a rencontré un problème lors de son exécution. (" + e.getMessage() + ")");
                 supervisor.getErrorHandler().handleException(e);
