@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 public @interface Subcommand {
 
     String name();
-
     String description();
+    String group() default "";
 
 }

@@ -10,11 +10,8 @@ import java.lang.annotation.*;
 public @interface Option {
 
     OptionType type();
-
     String name();
-
     String description();
-
-    boolean isRequired();
+    boolean required();
 
 }

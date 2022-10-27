@@ -7,15 +7,16 @@ import me.maxouxax.supervisor.commands.slashannotations.Subcommand;
 import me.maxouxax.supervisor.commands.slashannotations.SubcommandGroup;
 import me.maxouxax.supervisor.supervised.Supervised;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.interactions.commands.build.*;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 public final class CommandManager {
 
@@ -31,23 +32,43 @@ public final class CommandManager {
     public void updateCommands(Supervised supervised) {
         List<CommandData> commands = new ArrayList<>();
         discordCommands.get(supervised).forEach(discordCommand -> {
-            try {
-                Method method = discordCommand.getClass().getMethod("onCommand", TextChannel.class, Member.class, SlashCommandInteractionEvent.class);
-                List<OptionData> options = Arrays.stream(method.getAnnotationsByType(Option.class)).map(option -> new OptionData(option.type(), option.name(), option.description(), option.isRequired())).toList();
-                List<SubcommandData> subcommands = Arrays.stream(method.getAnnotationsByType(Subcommand.class)).map(subcommand -> new SubcommandData(subcommand.name(), subcommand.description())).toList();
-                List<SubcommandGroupData> subcommandGroups = Arrays.stream(method.getAnnotationsByType(SubcommandGroup.class)).map(subcommandGroup -> new SubcommandGroupData(subcommandGroup.name(), subcommandGroup.description())).toList();
+            SlashCommandData commandData = Commands.slash(discordCommand.name(), discordCommand.description());
 
-                SlashCommandData commandData = Commands.slash(discordCommand.name(), discordCommand.description());
-                if (options.size() != 0) commandData = commandData.addOptions(options);
-                if (subcommands.size() != 0) commandData = commandData.addSubcommands(subcommands);
-                if (subcommandGroups.size() != 0) commandData = commandData.addSubcommandGroups(subcommandGroups);
+            List<Method> methods = List.of(discordCommand.getClass().getMethods());
+            for (Method method : methods) {
+                if (method.isAnnotationPresent(Subcommand.class)) {
+                    Subcommand subcommandAnnotation = method.getAnnotation(Subcommand.class);
+                    SubcommandData subcommandData = new SubcommandData(subcommandAnnotation.name(), subcommandAnnotation.description());
 
-                commands.add(commandData);
-            } catch (NoSuchMethodException e) {
-                // That should never happen
+                    subcommandData.addOptions(getOptionsFromMethod(method));
+
+                    if (method.isAnnotationPresent(SubcommandGroup.class)) {
+                        SubcommandGroup subcommandGroupAnnotation = method.getAnnotation(SubcommandGroup.class);
+                        SubcommandGroupData subcommandGroupData = new SubcommandGroupData(subcommandGroupAnnotation.name(), subcommandGroupAnnotation.description());
+                        subcommandGroupData.addSubcommands(subcommandData);
+                        commandData.addSubcommandGroups(subcommandGroupData);
+                    } else {
+                        commandData.addSubcommands(subcommandData);
+                    }
+                } else {
+                    commandData.addOptions(getOptionsFromMethod(method));
+                }
             }
+            commands.add(commandData);
         });
         supervised.getJda().updateCommands().addCommands(commands).queue();
+    }
+
+    private List<OptionData> getOptionsFromMethod(Method method) {
+        List<Option> options = List.of(method.getAnnotationsByType(Option.class));
+        List<OptionData> optionDataList = new ArrayList<>();
+
+        for (Option option : options) {
+            OptionData optionData = new OptionData(option.type(), option.name(), option.description(), option.required());
+            optionDataList.add(optionData);
+        }
+
+        return optionDataList;
     }
 
     public boolean executeConsoleCommand(String commandInput) {
@@ -85,7 +106,8 @@ public final class CommandManager {
         return discordCommands.get(supervised);
     }
 
-    public void executeDiscordCommand(Supervised supervised, String command, SlashCommandInteractionEvent slashCommandEvent) {
+    public void executeDiscordCommand(Supervised supervised, String command, SlashCommandInteractionEvent
+            slashCommandEvent) {
         discordCommands.get(supervised).stream().filter(discordCommand -> discordCommand.name().equalsIgnoreCase(command)).findFirst().ifPresent(discordCommand -> {
             if (!slashCommandEvent.isFromGuild() || discordCommand.power() > getUserPower(supervised, slashCommandEvent.getGuild(), slashCommandEvent.getUser())) {
                 slashCommandEvent.reply("Vous ne pouvez pas utiliser cette commande.").setEphemeral(true).queue();
@@ -93,7 +115,18 @@ public final class CommandManager {
             }
 
             try {
-                discordCommand.onCommand(slashCommandEvent.getChannel(), slashCommandEvent.getMember(), slashCommandEvent);
+                String subcommand = slashCommandEvent.getSubcommandName();
+                String subcommandGroup = slashCommandEvent.getSubcommandGroup();
+                if (subcommand != null) {
+                    Method method = discordCommand.getMethod(subcommandGroup, subcommand);
+                    if (method != null) {
+                        method.invoke(slashCommandEvent.getChannel(), slashCommandEvent.getMember(), slashCommandEvent);
+                    } else {
+                        throw new NoSuchMethodException("La commande " + command + " n'a pas de sous-commande " + subcommand + " dans le groupe " + subcommandGroup);
+                    }
+                } else {
+                    discordCommand.onRootCommand(slashCommandEvent.getChannel(), slashCommandEvent.getMember(), slashCommandEvent);
+                }
             } catch (Exception e) {
                 supervisor.getLogger().error("La commande " + discordCommand.name() + " a rencontré un problème lors de son exécution. (" + e.getMessage() + ")");
                 supervisor.getErrorHandler().handleException(e);
@@ -105,7 +138,8 @@ public final class CommandManager {
         return supervised.getServerConfigsManager().getServerConfig(guild.getId()).getPowerFromUser(user.getId());
     }
 
-    public void executeDiscordInteraction(Supervised supervised, String id, GenericComponentInteractionCreateEvent event) {
+    public void executeDiscordInteraction(Supervised supervised, String id, GenericComponentInteractionCreateEvent
+            event) {
         discordInteractions.get(supervised).stream().filter(discordInteraction -> discordInteraction.id().equalsIgnoreCase(id)).findFirst().ifPresent(discordInteraction -> {
             try {
                 discordInteraction.onInteraction(event);

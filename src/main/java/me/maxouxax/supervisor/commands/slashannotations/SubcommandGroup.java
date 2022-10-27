@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
 public @interface SubcommandGroup {
 
     String name();
-
     String description();
 
 }
