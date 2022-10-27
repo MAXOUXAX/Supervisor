@@ -35,6 +35,9 @@ public final class CommandManager {
             SlashCommandData commandData = Commands.slash(discordCommand.name(), discordCommand.description());
 
             List<Method> methods = List.of(discordCommand.getClass().getMethods());
+
+            HashMap<String, SubcommandGroupData> subcommandGroups = new HashMap<>();
+
             for (Method method : methods) {
                 if (method.isAnnotationPresent(Subcommand.class)) {
                     Subcommand subcommandAnnotation = method.getAnnotation(Subcommand.class);
@@ -44,9 +47,8 @@ public final class CommandManager {
 
                     if (method.isAnnotationPresent(SubcommandGroup.class)) {
                         SubcommandGroup subcommandGroupAnnotation = method.getAnnotation(SubcommandGroup.class);
-                        SubcommandGroupData subcommandGroupData = new SubcommandGroupData(subcommandGroupAnnotation.name(), subcommandGroupAnnotation.description());
+                        SubcommandGroupData subcommandGroupData = subcommandGroups.getOrDefault(subcommandGroupAnnotation.name(), new SubcommandGroupData(subcommandGroupAnnotation.name(), subcommandGroupAnnotation.description()));
                         subcommandGroupData.addSubcommands(subcommandData);
-                        commandData.addSubcommandGroups(subcommandGroupData);
                     } else {
                         commandData.addSubcommands(subcommandData);
                     }
@@ -54,6 +56,7 @@ public final class CommandManager {
                     commandData.addOptions(getOptionsFromMethod(method));
                 }
             }
+            commandData.addSubcommandGroups(subcommandGroups.values());
             commands.add(commandData);
         });
         supervised.getJda().updateCommands().addCommands(commands).queue();
