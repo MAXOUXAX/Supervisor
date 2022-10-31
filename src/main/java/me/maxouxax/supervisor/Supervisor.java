@@ -128,6 +128,7 @@ public class Supervisor implements Runnable {
             startSupervisor();
         } catch (Exception e) {
             logger.error("Supervisor encountered an error while starting, forcibly shutting down...");
+            e.printStackTrace();
             System.exit(1);
         }
 
