@@ -19,6 +19,8 @@ public interface DiscordCommand extends Command {
             if (method.isAnnotationPresent(Subcommand.class)) {
                 Subcommand subcommandAnnotation = method.getAnnotation(Subcommand.class);
                 if (subcommandAnnotation.name().equals(subcommand)) {
+                    if(subcommandGroup == null) return method;
+
                     if (method.isAnnotationPresent(SubcommandGroup.class)) {
                         SubcommandGroup subcommandGroupAnnotation = method.getAnnotation(SubcommandGroup.class);
                         if (subcommandGroupAnnotation.name().equals(subcommandGroup)) {
