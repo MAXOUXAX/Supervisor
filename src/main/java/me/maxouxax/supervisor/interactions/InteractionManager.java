@@ -14,13 +14,11 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.build.*;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public final class InteractionManager {
 
@@ -85,6 +83,9 @@ public final class InteractionManager {
 
         for (Option option : options) {
             OptionData optionData = new OptionData(option.type(), option.name(), option.description(), option.required());
+            if (optionData.getType().canSupportChoices())
+                optionData.addChoices(Arrays.stream(option.choices()).map(s -> new Command.Choice(s, s)).toList());
+
             supervisor.getLogger().debug("Found option " + option.name() + " of type " + option.type() + " with description " + option.description() + " and required " + option.required());
             optionDataList.add(optionData);
         }
@@ -188,6 +189,8 @@ public final class InteractionManager {
 
     public void registerSupervised(Supervised supervised) {
         this.discordCommands.put(supervised, new ArrayList<>());
+        this.discordMessageInteractions.put(supervised, new ArrayList<>());
+        this.discordModalInteractions.put(supervised, new ArrayList<>());
     }
 
 }

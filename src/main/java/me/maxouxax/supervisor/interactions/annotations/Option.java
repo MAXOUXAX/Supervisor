@@ -13,5 +13,6 @@ public @interface Option {
     String name();
     String description();
     boolean required();
+    String[] choices() default {};
 
 }
