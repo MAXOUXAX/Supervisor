@@ -30,11 +30,11 @@ public class GlobalListener implements EventListener {
     }
 
     private void onMessageInteraction(GenericComponentInteractionCreateEvent event) {
-        supervisor.getInteractionManager().executeDiscordMessageInteraction(supervised, event.getId(), event);
+        supervisor.getInteractionManager().executeDiscordMessageInteraction(supervised, event.getComponentId(), event);
     }
 
     private void onModalInteraction(ModalInteractionEvent event) {
-        supervisor.getInteractionManager().executeDiscordModalInteraction(supervised, event.getId(), event);
+        supervisor.getInteractionManager().executeDiscordModalInteraction(supervised, event.getModalId(), event);
     }
 
 }
