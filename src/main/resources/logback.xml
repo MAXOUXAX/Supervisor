@@ -20,6 +20,8 @@
         </encoder>
     </appender>
 
+    <logger name="me.maxouxax.supervisor" level="INFO"/>
+
     <root level="INFO">
         <appender-ref ref="ROLLING"/>
         <appender-ref ref="STDOUT"/>
