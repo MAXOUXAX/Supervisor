@@ -1,4 +1,4 @@
-package me.maxouxax.supervisor.commands.slashannotations;
+package me.maxouxax.supervisor.interactions.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,9 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(value = ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SubcommandGroup {
-
-    String name();
-    String description();
-
+public @interface Options {
+    Option[] value();
 }

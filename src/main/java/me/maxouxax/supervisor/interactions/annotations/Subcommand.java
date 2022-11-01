@@ -1,4 +1,4 @@
-package me.maxouxax.supervisor.commands.slashannotations;
+package me.maxouxax.supervisor.interactions.annotations;
 
 import java.lang.annotation.*;
 
@@ -9,6 +9,5 @@ public @interface Subcommand {
 
     String name();
     String description();
-    String group() default "";
 
 }

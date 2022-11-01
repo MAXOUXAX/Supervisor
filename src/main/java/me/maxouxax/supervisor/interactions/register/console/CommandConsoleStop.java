@@ -1,7 +1,7 @@
-package me.maxouxax.supervisor.commands.register.console;
+package me.maxouxax.supervisor.interactions.register.console;
 
 import me.maxouxax.supervisor.Supervisor;
-import me.maxouxax.supervisor.commands.ConsoleCommand;
+import me.maxouxax.supervisor.interactions.commands.ConsoleCommand;
 
 public class CommandConsoleStop implements ConsoleCommand {
 

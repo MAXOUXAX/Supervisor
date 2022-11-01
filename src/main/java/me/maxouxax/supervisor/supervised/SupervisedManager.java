@@ -28,7 +28,7 @@ public class SupervisedManager {
                 if (file.isDirectory() || !file.getName().endsWith(".jar")) continue;
                 try {
                     Supervised loadedSupervised = loadSupervised(file);
-                    supervisor.getCommandManager().registerSupervised(loadedSupervised);
+                    supervisor.getInteractionManager().registerSupervised(loadedSupervised);
                     if (loadedSupervised != null) {
                         supervised.add(loadedSupervised);
                         loadedSupervised.onLoad();

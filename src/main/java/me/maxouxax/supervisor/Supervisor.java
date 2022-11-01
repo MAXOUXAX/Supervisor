@@ -1,8 +1,8 @@
 package me.maxouxax.supervisor;
 
-import me.maxouxax.supervisor.commands.CommandManager;
-import me.maxouxax.supervisor.commands.register.console.CommandConsoleStop;
 import me.maxouxax.supervisor.database.DatabaseManager;
+import me.maxouxax.supervisor.interactions.InteractionManager;
+import me.maxouxax.supervisor.interactions.register.console.CommandConsoleStop;
 import me.maxouxax.supervisor.supervised.SupervisedManager;
 import me.maxouxax.supervisor.utils.ErrorHandler;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class Supervisor implements Runnable {
     private Logger logger;
     private ErrorHandler errorHandler;
     private SupervisedManager supervisedManager;
-    private CommandManager commandManager;
+    private InteractionManager interactionManager;
     private String version;
     private boolean running;
 
@@ -54,9 +54,9 @@ public class Supervisor implements Runnable {
         }
 
         logger.info("Loading command manager...");
-        this.commandManager = new CommandManager();
+        this.interactionManager = new InteractionManager();
         logger.info("Registering stop command...");
-        this.commandManager.registerConsoleCommand(new CommandConsoleStop());
+        this.interactionManager.registerConsoleCommand(new CommandConsoleStop());
 
         logger.info("Initial components loaded, loading supervised manager...");
         this.supervisedManager = new SupervisedManager();
@@ -135,7 +135,7 @@ public class Supervisor implements Runnable {
         while (running) {
             if (scanner.hasNextLine()) {
                 String commandInput = scanner.nextLine();
-                if (!commandManager.executeConsoleCommand(commandInput)) {
+                if (!interactionManager.executeConsoleCommand(commandInput)) {
                     logger.info("Unknown command: " + commandInput);
                 }
             }
@@ -163,8 +163,8 @@ public class Supervisor implements Runnable {
         return errorHandler;
     }
 
-    public CommandManager getCommandManager() {
-        return commandManager;
+    public InteractionManager getInteractionManager() {
+        return interactionManager;
     }
 
     public String getVersion() {

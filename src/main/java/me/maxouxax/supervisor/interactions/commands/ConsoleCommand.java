@@ -1,4 +1,4 @@
-package me.maxouxax.supervisor.commands;
+package me.maxouxax.supervisor.interactions.commands;
 
 public interface ConsoleCommand extends Command {
 

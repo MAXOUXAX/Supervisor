@@ -1,7 +1,6 @@
 package me.maxouxax.supervisor.supervised;
 
 import me.maxouxax.supervisor.Supervisor;
-import me.maxouxax.supervisor.manager.GlobalListener;
 import me.maxouxax.supervisor.serversconfig.ServerConfigsManager;
 import net.dv8tion.jda.api.JDA;
 import org.jetbrains.annotations.NotNull;

@@ -1,4 +1,4 @@
-package me.maxouxax.supervisor.commands.slashannotations;
+package me.maxouxax.supervisor.interactions.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

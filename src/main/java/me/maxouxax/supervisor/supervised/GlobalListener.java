@@ -1,8 +1,8 @@
-package me.maxouxax.supervisor.manager;
+package me.maxouxax.supervisor.supervised;
 
 import me.maxouxax.supervisor.Supervisor;
-import me.maxouxax.supervisor.supervised.Supervised;
 import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
@@ -21,16 +21,20 @@ public class GlobalListener implements EventListener {
     @Override
     public void onEvent(@NotNull GenericEvent event) {
         if (event instanceof SlashCommandInteractionEvent) onCommand((SlashCommandInteractionEvent) event);
-        if (event instanceof GenericComponentInteractionCreateEvent)
-            onInteraction((GenericComponentInteractionCreateEvent) event);
+        if (event instanceof GenericComponentInteractionCreateEvent) onMessageInteraction((GenericComponentInteractionCreateEvent) event);
+        if (event instanceof ModalInteractionEvent) onModalInteraction((ModalInteractionEvent) event);
     }
 
     private void onCommand(SlashCommandInteractionEvent event) {
-        supervisor.getCommandManager().executeDiscordCommand(supervised, event.getName(), event);
+        supervisor.getInteractionManager().executeDiscordCommand(supervised, event.getName(), event);
     }
 
-    private void onInteraction(GenericComponentInteractionCreateEvent event) {
-        supervisor.getCommandManager().executeDiscordInteraction(supervised, event.getId(), event);
+    private void onMessageInteraction(GenericComponentInteractionCreateEvent event) {
+        supervisor.getInteractionManager().executeDiscordMessageInteraction(supervised, event.getId(), event);
+    }
+
+    private void onModalInteraction(ModalInteractionEvent event) {
+        supervisor.getInteractionManager().executeDiscordModalInteraction(supervised, event.getId(), event);
     }
 
 }

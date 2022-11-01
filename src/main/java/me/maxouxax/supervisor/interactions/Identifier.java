@@ -1,4 +1,4 @@
-package me.maxouxax.supervisor.commands;
+package me.maxouxax.supervisor.interactions;
 
 public interface Identifier {
 

@@ -1,4 +1,4 @@
-package me.maxouxax.supervisor.commands.slashannotations;
+package me.maxouxax.supervisor.interactions.annotations;
 
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
