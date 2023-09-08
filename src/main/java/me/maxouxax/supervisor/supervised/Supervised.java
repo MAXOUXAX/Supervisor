@@ -2,6 +2,7 @@ package me.maxouxax.supervisor.supervised;
 
 import me.maxouxax.supervisor.Supervisor;
 import me.maxouxax.supervisor.serversconfig.ServerConfigsManager;
+import me.maxouxax.supervisor.utils.YamlUtils;
 import net.dv8tion.jda.api.JDA;
 import org.jetbrains.annotations.NotNull;
 import org.yaml.snakeyaml.Yaml;
@@ -154,7 +155,7 @@ public abstract class Supervised {
 
         if (this.configFile.exists()) {
 
-            Yaml yaml = new Yaml(new CustomClassLoaderConstructor(this.classLoader));
+            Yaml yaml = new Yaml(new CustomClassLoaderConstructor(this.classLoader, YamlUtils.getLoaderOptions()));
             yaml.setBeanAccess(BeanAccess.FIELD);
 
             try {

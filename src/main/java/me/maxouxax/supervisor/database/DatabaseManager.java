@@ -1,6 +1,7 @@
 package me.maxouxax.supervisor.database;
 
 import me.maxouxax.supervisor.Supervisor;
+import me.maxouxax.supervisor.utils.YamlUtils;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.introspector.BeanAccess;
@@ -25,7 +26,7 @@ public class DatabaseManager {
         if (file.exists()) {
 
             try (final Reader reader = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
-                Yaml yaml = new Yaml(new CustomClassLoaderConstructor(ClassLoader.getSystemClassLoader()));
+                Yaml yaml = new Yaml(new CustomClassLoaderConstructor(ClassLoader.getSystemClassLoader(), YamlUtils.getLoaderOptions()));
                 yaml.setBeanAccess(BeanAccess.FIELD);
 
                 databaseCredentials = yaml.loadAs(reader, DatabaseCredentials.class);
