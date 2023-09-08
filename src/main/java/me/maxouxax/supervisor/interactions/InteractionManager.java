@@ -102,7 +102,7 @@ public final class InteractionManager {
             try {
                 consoleCommand.onCommand(args);
             } catch (Exception e) {
-                supervisor.getLogger().error("La commande " + consoleCommand.name() + " a rencontré un problème lors de son exécution. (" + e.getMessage() + ")");
+                supervisor.getLogger().error("La commande " + consoleCommand.name() + " a rencontré un problème lors de son exécution. (" + e.getMessage() + ")", e);
             }
         });
         return command.isPresent();
@@ -157,7 +157,7 @@ public final class InteractionManager {
                     discordCommand.onRootCommand(slashCommandEvent.getChannel(), slashCommandEvent.getMember(), slashCommandEvent);
                 }
             } catch (Exception e) {
-                supervisor.getLogger().error("La commande " + discordCommand.name() + " a rencontré un problème lors de son exécution. (" + e.getMessage() + ")");
+                supervisor.getLogger().error("La commande " + discordCommand.name() + " a rencontré un problème lors de son exécution. (" + e.getMessage() + ")", e);
                 supervisor.getErrorHandler().handleException(e);
             }
         });
@@ -172,7 +172,7 @@ public final class InteractionManager {
             try {
                 discordInteraction.onInteraction(event);
             } catch (Exception e) {
-                supervisor.getLogger().error("L'interaction " + discordInteraction.id() + " a rencontré un problème lors de son exécution. (" + e.getMessage() + ")");
+                supervisor.getLogger().error("L'interaction " + discordInteraction.id() + " a rencontré un problème lors de son exécution. (" + e.getMessage() + ")", e);
             }
         });
     }
@@ -182,7 +182,7 @@ public final class InteractionManager {
             try {
                 discordModalInteraction.onModalSubmit(event);
             } catch (Exception e) {
-                supervisor.getLogger().error("L'interaction " + discordModalInteraction.id() + " a rencontré un problème lors de son exécution. (" + e.getMessage() + ")");
+                supervisor.getLogger().error("L'interaction " + discordModalInteraction.id() + " a rencontré un problème lors de son exécution. (" + e.getMessage() + ")", e);
             }
         });
     }
