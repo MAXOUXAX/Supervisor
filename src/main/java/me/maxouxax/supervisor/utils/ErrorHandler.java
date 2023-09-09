@@ -11,9 +11,7 @@ public class ErrorHandler {
     }
 
     public void handleException(Throwable exception) {
-        supervisor.getLogger().error("Une erreur est survenue !\n" + exception.getMessage());
-        exception.printStackTrace();
-        //TODO: Sentry integration
+        supervisor.getLogger().error("Une erreur est survenue !\n" + exception.getMessage(), exception);
     }
 
 
